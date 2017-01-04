@@ -6,7 +6,6 @@ import de.tuhh.diss.io.SimpleIO;
 public class HarborStorageApp {
 	
 	private static HarborStorageManagement HSM;
-	//private Packet[] packetArray;
 	
 	private static void showAvaliblePackets() {			//This method creates an array of the stored packets and prints the information, but only if there are items in it
 		Packet[] packetArray;
@@ -23,22 +22,52 @@ public class HarborStorageApp {
 		}
 	}
 	
+	private static String nonBlankSting(){				//This method makes sure the description entered is not blank
+		boolean notBlank = false;
+		String des = SimpleIO.readString();
+		while (notBlank == false){
+			if ( des.compareTo("") != 0)
+				notBlank = true;
+			else {
+				SimpleIO.print("I'm sorry, the description you entered is blank.\n");
+				SimpleIO.print("Please enter a description that conatains at least one character.\n");
+				des = SimpleIO.readString();
+			}
+		}
+		return des;
+	}
+	
 	private static int realityCheck(){					//This method makes sure the numbers entered are greater than 0
 		boolean Real = false;
-		int num = SimpleIO.readInt();
+		int num = readInt();
 		while (Real == false){
 			if (num > 0)
 				Real = true;
 			else {
 				SimpleIO.print("I'm sorry, the number you entered is not realistic.\n");
 				SimpleIO.print("Please enter a number greater than 0.\n");
-				num = SimpleIO.readInt();
+				num = readInt();
 			}
 		}
 		return num;
 	}
 	
-	
+	private static int readInt(){					//Prevents the program from crashing if a String is entered instead of an int
+		boolean string = true;
+		int num = 0;
+		while(string == true){
+			try{
+				num = SimpleIO.readInt();
+				string = false;
+			} catch (Exception e){
+				SimpleIO.print("I'm sorry, you entered something other than a number.\n");
+				SimpleIO.print("Please enter a number and try again.\n");
+			}
+		}
+		
+		
+		return num;
+	}
 	
 	public static void main (String[] args)  {
 	HSM = new HarborStorageManagement();				// This way HSM actually gets created, and program will run
@@ -54,7 +83,7 @@ public class HarborStorageApp {
 		switch (selection){
 		case 1:
 			SimpleIO.print("Please give a description\n");
-			String description = SimpleIO.readString();
+			String description = nonBlankSting();
 			
 			SimpleIO.print("Please give the width of the packet\n");
 			int wi = realityCheck();
@@ -78,7 +107,7 @@ public class HarborStorageApp {
 			
 		case 2:
 			SimpleIO.print("Please give a description\n");
-			String description1 = SimpleIO.readString();
+			String description1 = nonBlankSting();
 			try {
 				HSM.retrievePacket(description1);
 			} catch (StorageException e) {
